@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../models/season_model.dart';
 
@@ -17,13 +18,18 @@ Widget buildSeasonsList(List<SeasonModel> seasons, BuildContext context) {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           child: Stack(
             children: [
-              Image.network(
-                (season.image != null && season.image!.isNotEmpty)
-                    ? season.image!
-                    : 'https://i.pinimg.com/736x/f2/83/6c/f2836c465d821c92b5267faa7daaefb2.jpg',
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  context.push("/seasonDetails", extra: season);
+                },
+                child: Image.network(
+                  (season.image != null && season.image!.isNotEmpty)
+                      ? season.image!
+                      : 'https://i.pinimg.com/736x/f2/83/6c/f2836c465d821c92b5267faa7daaefb2.jpg',
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -45,14 +51,14 @@ Widget buildSeasonsList(List<SeasonModel> seasons, BuildContext context) {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Season ${index + 1}',
+                          'Season ${season.number}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          season.startDate ?? '...',
+                          season.startDate ?? '',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

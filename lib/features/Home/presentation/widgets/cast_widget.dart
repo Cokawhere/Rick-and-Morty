@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../models/character_model.dart';
 
@@ -29,13 +30,18 @@ Widget buildCharactersList(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Image.network(
-                (character.image != null && character.image!.isNotEmpty)
-                    ? character.image!
-                    : 'https://i.pinimg.com/736x/f2/83/6c/f2836c465d821c92b5267faa7daaefb2.jpg',
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
+              child: InkWell(
+                onTap: () {
+                  context.push("/characterDetails", extra: character);
+                },
+                child: Image.network(
+                  (character.image != null && character.image!.isNotEmpty)
+                      ? character.image!
+                      : 'https://i.pinimg.com/736x/f2/83/6c/f2836c465d821c92b5267faa7daaefb2.jpg',
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(height: 4),
