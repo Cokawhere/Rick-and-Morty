@@ -20,15 +20,19 @@ class EpisodeModel {
   });
 
   factory EpisodeModel.fromJson(Map<String, dynamic> json) {
+    String? cleanSummary = json['summary'];
+    if (cleanSummary != null) {
+      cleanSummary = cleanSummary.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+    }
     return EpisodeModel(
       id: json['id'],
       name: json['name'],
-      summary: json['summary'],
+      summary: cleanSummary,
       image: json['image']?['medium'],
       season: json['season'],
       number: json['number'],
       runtime: json['runtime'],
-      airdate:json['airdate'],
+      airdate: json['airdate'],
     );
   }
 }

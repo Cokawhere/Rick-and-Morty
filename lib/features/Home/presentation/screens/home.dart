@@ -15,8 +15,8 @@ class HomeScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         toolbarHeight: 45,
-        backgroundColor: const Color.fromARGB(55, 100, 180, 246),
-        elevation: 0,
+        backgroundColor: const Color.fromARGB(27, 242, 242, 243),
+        elevation: 9,
         title: const Text(
           'Rick and morty',
           style: TextStyle(
@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                   height: double.infinity,
                 ),
                 BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(),
                 ),
                 Positioned(

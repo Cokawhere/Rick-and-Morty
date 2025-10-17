@@ -9,20 +9,18 @@ class EpisodesCubit extends Cubit<EpisodesState> {
   EpisodesCubit() : super(EpisodesInitial());
   List<EpisodeModel> allEpisodes = [];
 
-  Future<void> getAllEpisodes() async {
+  Future<void> getAllEpisodes(int seasonNumber) async {
     emit(EpisodesLoading());
     try {
       allEpisodes = await episodesRepository.getEpisodes();
-      emit(EpisodesLoaded(allEpisodes));
-    } catch (e) {
-      emit(EpisodesError(e.toString()));
-    }
-    
-  }
-  void filterBySeason(int seasonNumber) {
       final filteredEpisodes = allEpisodes
           .where((epi) => epi.season == seasonNumber)
           .toList();
       emit(EpisodesFiltered(filteredEpisodes));
+    } catch (e) {
+      emit(EpisodesError(e.toString()));
     }
+  }
+
+  
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../models/season_model.dart';
-
 Widget buildSeasonsList(List<SeasonModel> seasons, BuildContext context) {
   return ListView.builder(
     itemCount: seasons.length,

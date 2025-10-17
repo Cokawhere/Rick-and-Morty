@@ -2,6 +2,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_app/features/SeasonDetailsFeature/logic/cubit/episodes_cubit.dart';
+import 'package:rick_and_morty_app/features/SeasonDetailsFeature/widgets/episode.dart';
 import 'package:rick_and_morty_app/models/season_model.dart';
 import '../../../constents/colors.dart';
 
@@ -13,7 +14,28 @@ class SeasonDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-
+      appBar: AppBar(
+        toolbarHeight: 45,
+        backgroundColor: const Color.fromARGB(27, 242, 242, 243),
+        elevation: 6,
+        title: Text(
+          '${season.number} Seasons',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.text,
+            fontSize: 25,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back_ios_new_outlined,
+            size: 25,
+            color: AppColors.text,
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           Image.network(
@@ -25,86 +47,44 @@ class SeasonDetailsScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 11, sigmaY: 11),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(),
           ),
-          Positioned(
-            top: 10,
-            right: 0,
-            left: 0,
-            child: Center(
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8, left: 8, top: 8),
-                  child: Column(
-                    children: [
-                      const Divider(
-                        color: AppColors.text,
-                        // height: 2,
-                        thickness: 3,
-                        endIndent: 10,
-                        indent: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${season.episodeOrder} Episodes',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 23,
-                              fontWeight: FontWeight.bold,
-                            ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BlocBuilder<EpisodesCubit, EpisodesState>(
+                builder: (context, state) {
+                  if (state is EpisodesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppColors.text),
+                    );
+                  } else if (state is EpisodesFiltered) {
+                    final episodes = state.filteredEpisodes;
+                    if (episodes.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No episodes found',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.text,
+                            fontSize: 25,
                           ),
-                        ],
-                      ),
-                      const Divider(
-                        color: AppColors.text,
-                        // height: 2,
-                        thickness: 3,
-                        endIndent: 10,
-                        indent: 10,
-                      ),
-                      Column(
-                        children: [
-                          BlocBuilder<EpisodesCubit, EpisodesState>(
-                            builder: (context, state) {
-                              final cubit = context.read<EpisodesCubit>();
-                              if (state is EpisodesLoading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (state is EpisodesLoaded) {
-                                cubit.filterBySeason(season.number ?? 0);
-                                return const Center(
-                                  child: Text('Filtering...'),
-                                );
-                              } else if (state is EpisodesFiltered) {
-                                final episodes = state.filteredEpisodes ?? [];
-                                print(episodes);
-                                return ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: episodes.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        width: 400,
-                                        height: 200,
-                                        color: AppColors.background,
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
-                              return const Center();
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: episodes.length,
+                      itemBuilder: (context, index) {
+                        final episode = episodes[index];
+                        return EpisodeCard(episode: episode);
+                      },
+                    );
+                  }
+                  return const Center();
+                },
               ),
             ),
           ),
